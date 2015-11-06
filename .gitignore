@@ -1,0 +1,5 @@
+composer.lock
+vendor
+api_key.txt
+textrazor.key
+*-out

@@ -1,0 +1,25 @@
+{
+    "name": "demiankatz/DimeExtraction",
+    "description": "Tools for dime novel entity extraction.",
+    "authors": [
+        {
+            "name": "Demian Katz",
+            "email": "demian.katz@villanova.edu"
+        }
+    ],
+    "license": "GPL-2.0",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/AlchemyAPI/alchemyapi_php.git"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/TextRazor/textrazor-php.git"
+		}
+	],
+    "require": {
+	    "alchemyai/alchemyapi_php": "dev-master",
+        "textrazor/textrazor-php": "dev-master"
+    }
+}
