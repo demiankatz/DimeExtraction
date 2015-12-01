@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#for file in raw-texts/*; do
-#    echo Processing $file...
-#    echo Harvesting AlchemyApi...
-#    php HarvestAlchemyApi.php $file
-#    echo Harvesting TextRazor...
-#    php HarvestTextRazor.php $file
-#done
+for file in raw-texts/*; do
+    echo Processing $file...
+    echo Harvesting AlchemyAPI...
+    php HarvestAlchemyApi.php $file
+    echo Harvesting TextRazor...
+    php HarvestTextRazor.php $file
+done
 
-echo Creating CSV summaries of AlchemyApi entities...
+echo Creating CSV summaries of AlchemyAPI entities...
 for file in alchemyapi-out/entities*.txt; do
     php AlchemyApiEntitiesToCsv.php $file
 done
@@ -28,4 +28,12 @@ done
 echo Creating CSV summaries of TextRazor topics...
 for file in textrazor-out/topics*.txt; do
     php TextRazorTopicsToCsv.php $file
+done
+
+echo Merging AlchemyAPI and TextRazor entity files...
+mkdir combined-out
+for file in raw-texts/*; do
+    base=`basename $file`
+    suffix=${base/.txt/.csv}
+    php CombineEntities.php alchemyapi-out/entities-$suffix textrazor-out/summary-combined-entities-$suffix combined-out/merged-entities-$suffix
 done
