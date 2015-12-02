@@ -8,18 +8,23 @@
         }
     ],
     "license": "GPL-2.0",
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/AlchemyAPI/alchemyapi_php.git"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/TextRazor/textrazor-php.git"
-		}
-	],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/AlchemyAPI/alchemyapi_php.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/TextRazor/textrazor-php.git"
+        }
+    ],
     "require": {
-	    "alchemyai/alchemyapi_php": "dev-master",
+        "alchemyai/alchemyapi_php": "dev-master",
         "textrazor/textrazor-php": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "DimeExtraction\\": "src/"
+        }
     }
 }
