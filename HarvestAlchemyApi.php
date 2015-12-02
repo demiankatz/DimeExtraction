@@ -5,7 +5,7 @@ require_once 'vendor/autoload.php';
 $text = file_get_contents($argv[1]);
 
 if (!$text) {
-  die('no text');
+    die('no text');
 }
 
 $api = new AlchemyAPI();
