@@ -17,6 +17,7 @@ Tools
 -----
 These tools allow retrieval of data from various APIs:
   - HarvestAlchemyApi.php [filename] - Dump information about [filename] into the alchemyapi-out directory.
+  - HarvestSpotlight.php [filename] - Dump information about [filename] into the spotlight-out directory.
   - HarvestTextRazor.php [filename] - Dump information about [filename] into the textrazor-out directory.
 
 These tools allow processing of the retrieved data:
