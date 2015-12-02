@@ -31,9 +31,12 @@ for file in textrazor-out/topics*.txt; do
 done
 
 echo Merging AlchemyAPI and TextRazor entity files...
-mkdir combined-out
+if [ ! -d combined-out ]; then
+    mkdir combined-out
+fi
 for file in raw-texts/*; do
     base=`basename $file`
     suffix=${base/.txt/.csv}
+    echo "-- *$suffix --"
     php CombineEntities.php alchemyapi-out/entities-$suffix textrazor-out/summary-combined-entities-$suffix combined-out/merged-entities-$suffix
 done
