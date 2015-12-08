@@ -5,7 +5,7 @@ $handle = fopen($argv[1], 'r');
 $header = fgetcsv($handle);
 $header[] = 'Count';
 
-$colsToDiff = [1, 2, 5, 6];
+$colsToDiff = [1, 2, 6];
 $data = [];
 while ($line = fgetcsv($handle)) {
     $id = $line[0];
@@ -23,6 +23,10 @@ while ($line = fgetcsv($handle)) {
         $forms[] = $line[3];
         $data[$id][3] = implode(',', array_unique($forms));
         $data[$id][4] .= ',' . $line[4];    // append offsets
+        // if similarity score doesn't match, create an average:
+        if ($data[$id][5] != $line[5]) {
+            $data[$id][5] = (($data[$id][5] * $data[$id][7]) + $line[5]) / ($data[$id][7] + 1);
+        }
         $data[$id][7]++;                    // increment count
 	}
 }
