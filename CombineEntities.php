@@ -13,7 +13,7 @@ $trHeader = prefixHeader('TextRazor ', fgetcsv($trHandle));
 $aiDummies = generateDummyRow(count($aiHeader));
 $slDummies = generateDummyRow(count($slHeader));
 $trDummies = generateDummyRow(count($trHeader));
-fputcsv($output, array_merge($aiHeader, $slHeader, $trHeader));
+fputcsv($output, array_merge(['Matched Rows', 'Matched IDs'], $aiHeader, $slHeader, $trHeader));
 
 /* AlchemyAPI indexing routine -- no longer used, since we're now making this the center of the join
 $aiRows = $aiFreebaseIndex = $aiKeywordIndex = [];
@@ -63,8 +63,10 @@ $slMatchedIds = $trMatchedKeywords = [];
 while ($line = fgetcsv($aiHandle)) {
     unset($trMatchedLine);
     unset($slMatchedLine);
+    $matchedRows = $matchedIds = 0;
     if (!empty($line[8])) {
         if (isset($trFreebaseIndex[$line[8]])) {
+            $matchedIds++;
             $trMatchedLine = & $trFreebaseIndex[$line[8]];
         }
     }
@@ -74,6 +76,7 @@ while ($line = fgetcsv($aiHandle)) {
     if (!isset($trMatchedLine)) {
         $trMatchedLine = & $trDummies;
     } else {
+        $matchedRows++;
         $trMatchedKeywords[] = $trMatchedLine[0];
     }
     if (!is_array($trMatchedLine)) {
@@ -83,6 +86,7 @@ while ($line = fgetcsv($aiHandle)) {
  
     if (!empty($line[7])) {
         if (isset($slDbpediaIndex[$line[7]])) {
+            $matchedIds++;
             $slMatchedLine = & $slDbpediaIndex[$line[7]];
         }
     }
@@ -92,22 +96,23 @@ while ($line = fgetcsv($aiHandle)) {
     if (!isset($slMatchedLine)) {
         $slMatchedLine = & $slDummies;
     } else {
+        $matchedRows++;
         $slMatchedIds[] = $slMatchedLine[0];
     }
     
-    fputcsv($output, array_merge($line, $slMatchedLine, $trMatchedLine));
+    fputcsv($output, array_merge([$matchedRows, $matchedIds], $line, $slMatchedLine, $trMatchedLine));
 }
 fclose($aiHandle);
 
 foreach ($trRows as $line) {
     if (!in_array($line[0], $trMatchedKeywords)) {
-        fputcsv($output, array_merge($aiDummies, $slDummies, $line));
+        fputcsv($output, array_merge([1, 0], $aiDummies, $slDummies, $line));
     }
 }
 
 foreach ($slRows as $line) {
     if (!in_array($line[0], $slMatchedIds)) {
-        fputcsv($output, array_merge($aiDummies, $line, $trDummies));
+        fputcsv($output, array_merge([1, 0], $aiDummies, $line, $trDummies));
     }
 }
 
