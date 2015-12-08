@@ -16,26 +16,18 @@ for file in alchemyapi-out/entities*.txt; do
 done
 
 echo Creating CSV summaries of Spotlight entities...
-for file in spotlight-out/*.json; do
-    php SpotlightEntitiesToCsv.php $file
-done
 for file in raw-texts/*; do
     base=`basename $file`
-    cat spotlight-out/*${base/.txt/.csv} > spotlight-out/combined-entities-${base/.txt/.csv}
-done
-for file in spotlight-out/combined-entities*; do
-    php SpotlightEntitySummarizer.php $file
+    php SpotlightEntitiesToCsv.php spotlight-out/${base/.txt/*.json}
+    php SpotlightEntitySummarizer.php spotlight-out/${base/.txt/.csv}
 done
 
 echo Creating CSV summaries of TextRazor entities...
-for file in textrazor-out/entities*.txt; do
-    php TextRazorEntitiesToCsv.php $file
-done
 for file in raw-texts/*; do
     base=`basename $file`
-    cat textrazor-out/entities*${base/.txt/.csv} > textrazor-out/combined-entities-${base/.txt/.csv}
+    php TextRazorEntitiesToCsv.php textrazor-out/entities*${base}
 done
-for file in textrazor-out/combined-entities*; do
+for file in textrazor-out/entities*.csv; do
     php TextRazorEntitySummarizer.php $file
 done
 
