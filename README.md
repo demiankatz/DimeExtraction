@@ -24,7 +24,7 @@ These tools allow retrieval of data from various APIs:
 
 These tools allow processing of the retrieved data:
   - AlchemyApiEntitiesToCsv.php [filename] - Where [filename] is an alchemyapi-out/entities*.txt file, convert it to CSV.
-  - CombineEntities.php [AlchemyAPI input] [TextRazor input] [output] - Where [AlchemyAPI input] is the output from AlchemyApiEntitiesToCsv.php and [TextRazor input] is the output from TextRazorEntitySummarizer.php, merge the two files together by matching identifiers and keywords, then write the result to [output].
+  - CombineEntities.php [AlchemyAPI input] [Spotlight input] [TextRazor input] [output] - Where [AlchemyAPI input] is the output from AlchemyApiEntitiesToCsv.php, [Spotlight input] is the output from SpotlightEntitySummarizer.php and [TextRazor input] is the output from TextRazorEntitySummarizer.php, merge the two files together by matching identifiers and keywords, then write the result to [output].
   - DumpSerializedFile.php [filename] - Display the raw contents of [filename], where [filename] contains serialized PHP (raw AlchemyAPI and TextRazor output uses this format).
   - SpotlightEntitiesToCsv.php [filename] - Where [filename] is a spotlight-out/*.json file, convert it to CSV.
   - SpotlightEntitySummarizer.php [filename] - Where [filename] is an output file from SpotlightEntitiesToCsv.php (or several such output files concatenated together), create a summary-*.csv file summarizing its contents.

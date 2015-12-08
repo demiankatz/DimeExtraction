@@ -52,5 +52,5 @@ for file in raw-texts/*; do
     base=`basename $file`
     suffix=${base/.txt/.csv}
     echo "-- *$suffix --"
-    php CombineEntities.php alchemyapi-out/entities-$suffix textrazor-out/summary-combined-entities-$suffix combined-out/merged-entities-$suffix
+    php CombineEntities.php alchemyapi-out/entities-$suffix spotlight-out/summary-combined-entities-$suffix textrazor-out/summary-combined-entities-$suffix combined-out/merged-entities-$suffix
 done

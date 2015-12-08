@@ -1,60 +1,116 @@
 <?php
 
 $aiHandle = fopen($argv[1], 'r');
-$trHandle = fopen($argv[2], 'r');
-$output = fopen($argv[3], 'w');
+$slHandle = fopen($argv[2], 'r');
+$trHandle = fopen($argv[3], 'r');
+$output = fopen($argv[4], 'w');
 if (!$aiHandle || !$trHandle || !$output) {
     die("Problem opening file(s)");
 }
 $aiHeader = prefixHeader('AlchemyAPI ', fgetcsv($aiHandle));
+$slHeader = prefixHeader('Spotlight ', fgetcsv($slHandle));
 $trHeader = prefixHeader('TextRazor ', fgetcsv($trHandle));
 $aiDummies = generateDummyRow(count($aiHeader));
+$slDummies = generateDummyRow(count($slHeader));
 $trDummies = generateDummyRow(count($trHeader));
-fputcsv($output, array_merge($aiHeader, $trHeader));
+fputcsv($output, array_merge($aiHeader, $slHeader, $trHeader));
 
-$aiRows = $freebaseIndex = $keywordIndex = [];
+/* AlchemyAPI indexing routine -- no longer used, since we're now making this the center of the join
+$aiRows = $aiFreebaseIndex = $aiKeywordIndex = [];
 while ($line = fgetcsv($aiHandle)) {
     $aiRows[] = $line;
-    if (isset($keywordIndex[strtolower($line[0])])) {
-        echo "Warning: duplicate row for {$line[0]}\n";
+    if (isset($aiKeywordIndex[strtolower($line[0])])) {
+        echo "Warning: duplicate AlchemyAPI row for {$line[0]}\n";
     }
-    $keywordIndex[strtolower($line[0])] = & $aiRows[count($aiRows) - 1];
+    $aiKeywordIndex[strtolower($line[0])] = & $aiRows[count($aiRows) - 1];
     if (!empty($line[8])) {
-        $freebaseIndex[$line[8]] = & $aiRows[count($aiRows) - 1];
+        $aiFreebaseIndex[$line[8]] = & $aiRows[count($aiRows) - 1];
     }
 }
 fclose($aiHandle);
+*/
 
-$matchedKeywords = [];
+$trRows = $trFreebaseIndex = $trKeywordIndex = [];
 while ($line = fgetcsv($trHandle)) {
-    unset($matchedLine);
+    $trRows[] = $line;
+    if (isset($trKeywordIndex[strtolower($line[0])])) {
+        echo "Warning: duplicate AlchemyAPI row for {$line[0]}\n";
+    }
+    $trKeywordIndex[strtolower($line[0])] = & $trRows[count($trRows) - 1];
     if (!empty($line[3])) {
         $fbId = 'http://rdf.freebase.com/ns' . $line[3];
-        if (isset($freebaseIndex[$fbId])) {
-            $matchedLine = & $freebaseIndex[$fbId];
-        }
+        $trFreebaseIndex[$fbId] = & $trRows[count($trRows) - 1];
     }
-    if (!isset($matchedLine) && isset($keywordIndex[strtolower($line[0])])) {
-        $matchedLine = & $keywordIndex[strtolower($line[0])];
-    }
-    if (!isset($matchedLine)) {
-        $matchedLine = & $aiDummies;
-    } else {
-        $matchedKeywords[] = $matchedLine[0];
-    }
-    if (!is_array($matchedLine)) {
-        var_dump($matchedLine);
-        die('boom');
-    }
-    fputcsv($output, array_merge($matchedLine, $line));
 }
 fclose($trHandle);
 
-foreach ($aiRows as $line) {
-    if (!in_array($line[0], $matchedKeywords)) {
-        fputcsv($output, array_merge($line, $trDummies));
+$slRows = $slDbpediaIndex = $slKeywordIndex = [];
+while ($line = fgetcsv($slHandle)) {
+    $slRows[] = $line;
+    $slDbpediaIndex[$line[0]] = & $slRows[count($slRows) - 1];
+    foreach (array_unique(array_map('strtolower', explode(',', $line[3]))) as $keyword) {
+        if (!empty($keyword)) {
+            if (isset($slKeywordIndex[$keyword])) {
+                echo "Warning: duplicate Spotlight row for {$keyword}\n";
+            }
+            $slKeywordIndex[$keyword] = & $slRows[count($slRows) - 1];
+        }
     }
 }
+fclose($slHandle);
+
+$slMatchedIds = $trMatchedKeywords = [];
+while ($line = fgetcsv($aiHandle)) {
+    unset($trMatchedLine);
+    unset($slMatchedLine);
+    if (!empty($line[8])) {
+        if (isset($trFreebaseIndex[$line[8]])) {
+            $trMatchedLine = & $trFreebaseIndex[$line[8]];
+        }
+    }
+    if (!isset($trMatchedLine) && isset($trKeywordIndex[strtolower($line[0])])) {
+        $trMatchedLine = & $trKeywordIndex[strtolower($line[0])];
+    }
+    if (!isset($trMatchedLine)) {
+        $trMatchedLine = & $trDummies;
+    } else {
+        $trMatchedKeywords[] = $trMatchedLine[0];
+    }
+    if (!is_array($trMatchedLine)) {
+        var_dump($trMatchedLine);
+        die('boom');
+    }
+ 
+    if (!empty($line[7])) {
+        if (isset($slDbpediaIndex[$line[7]])) {
+            $slMatchedLine = & $slDbpediaIndex[$line[7]];
+        }
+    }
+    if (!isset($slMatchedLine) && isset($slKeywordIndex[strtolower($line[0])])) {
+        $slMatchedLine = & $slKeywordIndex[strtolower($line[0])];
+    }
+    if (!isset($slMatchedLine)) {
+        $slMatchedLine = & $slDummies;
+    } else {
+        $slMatchedIds[] = $slMatchedLine[0];
+    }
+    
+    fputcsv($output, array_merge($line, $slMatchedLine, $trMatchedLine));
+}
+fclose($aiHandle);
+
+foreach ($trRows as $line) {
+    if (!in_array($line[0], $trMatchedKeywords)) {
+        fputcsv($output, array_merge($aiDummies, $slDummies, $line));
+    }
+}
+
+foreach ($slRows as $line) {
+    if (!in_array($line[0], $slMatchedIds)) {
+        fputcsv($output, array_merge($aiDummies, $line, $trDummies));
+    }
+}
+
 fclose($output);
 
 function prefixHeader($prefix, $row)
