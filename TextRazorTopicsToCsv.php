@@ -1,6 +1,8 @@
 <?php
 
-$handle = fopen(str_replace('.txt', '.csv', $argv[1]), 'w');
+$outfile = str_replace('.txt', '.csv', $argv[1]);
+$outfile = preg_replace('/-[0-9]+/', '', $outfile);
+$handle = fopen($outfile, 'w');
 fputcsv($handle, ['Label', 'Wiki Link', 'Score', 'Section']);
 
 for ($i = 1; $i < count($argv); $i++) {
@@ -14,3 +16,5 @@ for ($i = 1; $i < count($argv); $i++) {
 }
 
 fclose($handle);
+
+

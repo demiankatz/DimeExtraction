@@ -1,6 +1,8 @@
 <?php
 
-$handle = fopen(str_replace('.txt', '.csv', $argv[1]), 'w');
+$outfile = str_replace('.txt', '.csv', $argv[1]);
+$outfile = preg_replace('/-[0-9]+/', '', $outfile);
+$handle = fopen($outfile, 'w');
 fputcsv($handle, ['Entity Id', 'Matched Text', 'Wiki Link', 'Freebase ID', 'Confidence Score', 'Relevance Score']);
 
 for ($i = 1; $i < count($argv); $i++) {

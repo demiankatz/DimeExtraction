@@ -18,22 +18,30 @@ done
 echo Creating CSV summaries of Spotlight entities...
 for file in raw-texts/*; do
     base=`basename $file`
-    php SpotlightEntitiesToCsv.php spotlight-out/${base/.txt/*.json}
+    files=""
+    for name in spotlight-out/${base/.txt/*.json}; do
+        files="$files $name"
+    done
+    php SpotlightEntitiesToCsv.php $files
     php SpotlightEntitySummarizer.php spotlight-out/${base/.txt/.csv}
 done
 
-echo Creating CSV summaries of TextRazor entities...
+echo Creating CSV summaries of TextRazor entities and topics...
 for file in raw-texts/*; do
     base=`basename $file`
-    php TextRazorEntitiesToCsv.php textrazor-out/entities*${base}
+    files=""
+    for name in textrazor-out/entities*${base}; do
+        files="$files $name"
+    done
+    php TextRazorEntitiesToCsv.php $files
+    files=""
+    for name in textrazor-out/topics*${base}; do
+        files="$files $name"
+    done
+    php TextRazorTopicsToCsv.php $files
 done
 for file in textrazor-out/entities*.csv; do
     php TextRazorEntitySummarizer.php $file
-done
-
-echo Creating CSV summaries of TextRazor topics...
-for file in textrazor-out/topics*.txt; do
-    php TextRazorTopicsToCsv.php $file
 done
 
 echo Merging AlchemyAPI and TextRazor entity files...
@@ -44,5 +52,5 @@ for file in raw-texts/*; do
     base=`basename $file`
     suffix=${base/.txt/.csv}
     echo "-- *$suffix --"
-    php CombineEntities.php alchemyapi-out/entities-$suffix spotlight-out/summary-combined-entities-$suffix textrazor-out/summary-combined-entities-$suffix combined-out/merged-entities-$suffix
+    php CombineEntities.php alchemyapi-out/entities-$suffix spotlight-out/summary-$suffix textrazor-out/summary-entities-$suffix combined-out/merged-entities-$suffix
 done
