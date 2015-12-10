@@ -59,6 +59,7 @@ while ($line = fgetcsv($slHandle)) {
 }
 fclose($slHandle);
 
+// first try to find matches around AlchemyAPI, which has the potential for a three-way join
 $slMatchedIds = $trMatchedKeywords = [];
 while ($line = fgetcsv($aiHandle)) {
     unset($trMatchedLine);
@@ -81,7 +82,7 @@ while ($line = fgetcsv($aiHandle)) {
     }
     if (!is_array($trMatchedLine)) {
         var_dump($trMatchedLine);
-        die('boom');
+        die('Unexpected value');
     }
  
     if (!empty($line[7])) {
@@ -104,12 +105,27 @@ while ($line = fgetcsv($aiHandle)) {
 }
 fclose($aiHandle);
 
+// check unmatched TextRazor rows to see if we can join them to Spotlight.
 foreach ($trRows as $line) {
-    if (!in_array($line[0], $trMatchedKeywords)) {
-        fputcsv($output, array_merge([1, 0], $aiDummies, $slDummies, $line));
+    // already stored this line? skip it!
+    if (in_array($line[0], $trMatchedKeywords)) {
+        continue;
     }
+    unset($slMatchedLine);
+    $matchedRows = $matchedIds = 0;
+    if (isset($slKeywordIndex[strtolower($line[0])])) {
+        $slMatchedLine = & $slKeywordIndex[strtolower($line[0])];
+    }
+    if (!isset($slMatchedLine)) {
+        $slMatchedLine = & $slDummies;
+    } else {
+        $matchedRows++;
+        $slMatchedIds[] = $slMatchedLine[0];
+    }
+    fputcsv($output, array_merge([$matchedRows, $matchedIds], $aiDummies, $slMatchedLine, $line));
 }
 
+// finally, dump out unmatched Spotlight rows.
 foreach ($slRows as $line) {
     if (!in_array($line[0], $slMatchedIds)) {
         fputcsv($output, array_merge([1, 0], $aiDummies, $line, $trDummies));
