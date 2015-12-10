@@ -113,7 +113,16 @@ foreach ($trRows as $line) {
     }
     unset($slMatchedLine);
     $matchedRows = $matchedIds = 0;
-    if (isset($slKeywordIndex[strtolower($line[0])])) {
+    if (!empty($line[2])) {
+        $parts = explode('/', $line[2]);
+        $lastPart = array_pop($parts);
+        $dbpediaId = 'http://dbpedia.org/resource/' . $lastPart;
+        if (isset($slDbpediaIndex[$dbpediaId])) {
+            $matchedIds++;
+            $slMatchedLine = & $slDbpediaIndex[$dbpediaId];
+        }
+    }
+    if (!isset($slMatchedLine) && isset($slKeywordIndex[strtolower($line[0])])) {
         $slMatchedLine = & $slKeywordIndex[strtolower($line[0])];
     }
     if (!isset($slMatchedLine)) {
