@@ -23,13 +23,14 @@ These tools allow retrieval of data from various APIs:
   - HarvestTextRazor.php [filename] - Dump information about [filename] into the textrazor-out directory.
 
 These tools allow processing of the retrieved data:
-  - AlchemyApiEntitiesToCsv.php [filename] - Where [filename] is an alchemyapi-out/entities*.txt file, convert it to CSV.
+  - AlchemyApiEntitiesToCsv.php [filenames] - Where [filenames] is a list of alchemyapi-out/entities*.txt files, convert them to a single CSV.
+  - AlchemyApiEntitySummarizer.php [filename] - Where [filename] is an output file from AlchemyApiEntitiesToCsv.php, create a summary-*.csv file summarizing its contents.
   - CombineEntities.php [AlchemyAPI input] [Spotlight input] [TextRazor input] [output] - Where [AlchemyAPI input] is the output from AlchemyApiEntitiesToCsv.php, [Spotlight input] is the output from SpotlightEntitySummarizer.php and [TextRazor input] is the output from TextRazorEntitySummarizer.php, merge the two files together by matching identifiers and keywords, then write the result to [output].
   - DumpSerializedFile.php [filename] - Display the raw contents of [filename], where [filename] contains serialized PHP (raw AlchemyAPI and TextRazor output uses this format).
-  - SpotlightEntitiesToCsv.php [filename] - Where [filename] is a spotlight-out/*.json file, convert it to CSV.
-  - SpotlightEntitySummarizer.php [filename] - Where [filename] is an output file from SpotlightEntitiesToCsv.php (or several such output files concatenated together), create a summary-*.csv file summarizing its contents.
-  - TextRazorEntitiesToCsv.php [filename] - Where [filename] is a textrazor-out/entities*.txt file, convert it to CSV.
-  - TextRazorEntitySummarizer.php [filename] - Where [filename] is an output file from TextRazorEntitiesToCsv.php (or several such output files concatenated together), create a summary-*.csv file summarizing its contents.
+  - SpotlightEntitiesToCsv.php [filenames] - Where [filenames] is a list of spotlight-out/*.json files, convert them to a single CSV.
+  - SpotlightEntitySummarizer.php [filename] - Where [filename] is an output file from SpotlightEntitiesToCsv.php, create a summary-*.csv file summarizing its contents.
+  - TextRazorEntitiesToCsv.php [filenames] - Where [filenames] is a list of textrazor-out/entities*.txt files, convert them to a single CSV.
+  - TextRazorEntitySummarizer.php [filename] - Where [filename] is an output file from TextRazorEntitiesToCsv.php, create a summary-*.csv file summarizing its contents.
   - TextRazorTopicsToCsv.php [filename] - Where [filename] is a textrazor-out/topics*.txt file, convert it to CSV.
 
 Script
