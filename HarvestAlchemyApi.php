@@ -21,7 +21,7 @@ $chunks = $chunkSize > 0
     ? \DimeExtraction\Chunker::getChunks($text, $chunkSize) : [$text];
 
 foreach ($chunks as $i => $text) {
-    $suffix = basename($argv[1]) . ($i > 0 ? '-' . ($i + 1) : '');
+    $suffix = basename(substr($argv[1], 0, strlen($argv[1]) - 4)) . ($i > 0 ? '-' . ($i + 1) : '') . '.txt';
 
     $ent = $api->entities('text', $text, ['maxRetrieve' => 1000]);
     file_put_contents($dir . 'entities-' . $suffix, serialize($ent));
