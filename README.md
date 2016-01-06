@@ -18,7 +18,7 @@ Paste your AlchemyApi API key into api_key.txt and your TextRazor API key into t
 Tools
 -----
 These tools allow retrieval of data from various APIs:
-  - HarvestAlchemyApi.php [filename] - Dump information about [filename] into the alchemyapi-out directory.
+  - HarvestAlchemyApi.php [filename] [chunksize] - Dump information about [filename] into the alchemyapi-out directory. [chunksize] is an optional chunk size (maximum number of bytes) that may be used to split the text into segments, retrieving separate results for each chunk; if omitted, the entire file is sent as a single chunk.
   - HarvestSpotlight.php [filename] - Dump information about [filename] into the spotlight-out directory.
   - HarvestTextRazor.php [filename] - Dump information about [filename] into the textrazor-out directory.
 
