@@ -19,7 +19,6 @@ for file in raw-texts/*; do
     for name in alchemyapi-out/entities*${base}; do
         files="$files $name"
     done
-echo $files
     php AlchemyApiEntitiesToCsv.php $files
 done
 for file in alchemyapi-out/entities*.csv; do
