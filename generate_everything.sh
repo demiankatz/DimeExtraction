@@ -1,9 +1,11 @@
 #!/bin/bash
 
+ALCHEMY_CHUNK_SIZE=25000
+
 for file in raw-texts/*; do
     echo Processing $file...
     echo Harvesting AlchemyAPI...
-    php HarvestAlchemyApi.php $file
+    php HarvestAlchemyApi.php $file $ALCHEMY_CHUNK_SIZE
     echo Harvesting Spotlight...
     php HarvestSpotlight.php $file
     echo Harvesting TextRazor...
@@ -11,8 +13,17 @@ for file in raw-texts/*; do
 done
 
 echo Creating CSV summaries of AlchemyAPI entities...
-for file in alchemyapi-out/entities*.txt; do
-    php AlchemyApiEntitiesToCsv.php $file
+for file in raw-texts/*; do
+    base=`basename $file`
+    files=""
+    for name in alchemyapi-out/entities*${base}; do
+        files="$files $name"
+    done
+echo $files
+    php AlchemyApiEntitiesToCsv.php $files
+done
+for file in alchemyapi-out/entities*.csv; do
+    php AlchemyApiEntitySummarizer.php $file
 done
 
 echo Creating CSV summaries of Spotlight entities...
@@ -52,5 +63,5 @@ for file in raw-texts/*; do
     base=`basename $file`
     suffix=${base/.txt/.csv}
     echo "-- *$suffix --"
-    php CombineEntities.php alchemyapi-out/entities-$suffix spotlight-out/summary-$suffix textrazor-out/summary-entities-$suffix combined-out/merged-entities-$suffix
+    php CombineEntities.php alchemyapi-out/entities-0-$suffix spotlight-out/summary-$suffix textrazor-out/summary-entities-$suffix combined-out/merged-entities-$suffix
 done
