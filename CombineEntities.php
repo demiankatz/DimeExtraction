@@ -34,7 +34,7 @@ $trRows = $trFreebaseIndex = $trKeywordIndex = [];
 while ($line = fgetcsv($trHandle)) {
     $trRows[] = $line;
     if (isset($trKeywordIndex[strtolower($line[0])])) {
-        echo "Warning: duplicate AlchemyAPI row for {$line[0]}\n";
+        echo "Warning: duplicate TextRazor row for {$line[0]}\n";
     }
     $trKeywordIndex[strtolower($line[0])] = & $trRows[count($trRows) - 1];
     if (!empty($line[3])) {
