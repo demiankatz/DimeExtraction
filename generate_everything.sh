@@ -54,7 +54,7 @@ for file in textrazor-out/entities*.csv; do
     php TextRazorEntitySummarizer.php $file
 done
 
-echo Merging AlchemyAPI and TextRazor entity files...
+echo Merging entity files together...
 if [ ! -d combined-out ]; then
     mkdir combined-out
 fi
