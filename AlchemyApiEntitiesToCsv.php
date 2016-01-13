@@ -2,7 +2,7 @@
 
 $handle = fopen(str_replace('.txt', '.csv', $argv[1]), 'w');
 $header = ['text', 'type', 'relevance', 'count'];
-$disambiguatedFields = ['subType', 'name', 'geo', 'dbpedia', 'freebase', 'census', 'yago', 'website', 'ciaFactbook', 'opencyc', 'geonames', 'crunchbase'];
+$disambiguatedFields = ['subType', 'name', 'geo', 'dbpedia', 'freebase', 'census', 'yago', 'website', 'ciaFactbook', 'opencyc', 'geonames', 'crunchbase', 'musicBrainz'];
 fputcsv($handle, array_merge($header, $disambiguatedFields));
 
 for ($i = 1; $i < count($argv); $i++) {
